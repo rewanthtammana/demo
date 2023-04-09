@@ -10,5 +10,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-    - name: Deployment
+    - name: Scan for package vulnerabilities
+      uses: CGO_ENABLED=0 go list -json -m all | nancy sleuth --skip-update-check
+    - name: Run app
       run: go run main.go
