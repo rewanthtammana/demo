@@ -1,7 +1,8 @@
 name: SCA scan
 
 on:
-  workflow_call:
+  push:
+    branches: 'main'
 
 jobs:
   golang:
