@@ -11,11 +11,13 @@ jobs:
     - uses: actions/setup-go@v3
       with:
         go-version: "1.19.x"
+    - name: Verify Go version
+      run: go version
     - name: Checkout code
       uses: actions/checkout@v3
     - name: Download nancy
       run: wget https://github.com/sonatype-nexus-community/nancy/releases/download/v1.0.42/nancy-v1.0.42-linux-amd64 && chmod +x nancy-v1.0.42-linux-amd64 && mv nancy-v1.0.42-linux-amd64 /usr/local/bin/nancy
     - name: Scan for package vulnerabilities
-      run: wget CGO_ENABLED=0 go list -json -m all | nancy sleuth --skip-update-check
+      run: CGO_ENABLED=0 go list -json -m all | nancy sleuth --skip-update-check
     - name: Run app
       run: go run main.go
