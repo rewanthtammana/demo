@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Github workflow
 
 on:
   # Runs on pushes targeting the default branch
@@ -38,6 +38,7 @@ jobs:
         ./gitleaks detect --source $GITHUB_WORKSPACE -v
   # Single deploy job since we're just deploying
   deploy:
+    needs: gitleaks
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
