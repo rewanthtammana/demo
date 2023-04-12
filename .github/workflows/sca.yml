@@ -1,23 +1,20 @@
-name: SCA scan
+name: CI - Secret check
 
 on:
   push:
     branches: 'main'
-
 jobs:
-  golang:
+  gitleaks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-go@v3
-      with:
-        go-version: "1.19.x"
-    - name: Verify Go version
-      run: go version
     - name: Checkout code
       uses: actions/checkout@v3
-    - name: Download nancy
-      run: wget https://github.com/sonatype-nexus-community/nancy/releases/download/v1.0.42/nancy-v1.0.42-linux-amd64 && chmod +x nancy-v1.0.42-linux-amd64 && mv nancy-v1.0.42-linux-amd64 /usr/local/bin/nancy
-    - name: Scan for package vulnerabilities
-      run: CGO_ENABLED=0 go list -json -m all | nancy sleuth --skip-update-check
-    - name: Run app
-      run: go run main.go
+    - name: Download Gitleaks
+      run: |
+        apt-get update && apt-get -y install wget
+        wget https://github.com/zricethezav/gitleaks/releases/download/v8.8.11/gitleaks_8.8.11_linux_x64.tar.gz
+        tar xvf gitleaks_8.8.11_linux_x64.tar.gz
+    - name: Run Gitleaks
+      run: |
+        echo GITHUBWORKSPACE=$GITHUB_WORKSPACE
+        ./gitleaks detect --source $GITHUB_WORKSPACE -v
