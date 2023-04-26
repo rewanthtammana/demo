@@ -1,0 +1,25 @@
+name: SCA check
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ "**" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Go 1.19
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+    - name: Download nancy
+      run: |
+        wget -O nancy https://github.com/sonatype-nexus-community/nancy/releases/download/v1.0.42/nancy-v1.0.42-linux-amd64
+        chmod +x nancy
+    - name: Run nancy
+      run: |
+        CGO_ENABLED=0 go list -json -m all | ./nancy sleuth --skip-update-check --quiet --exclude-vulnerability-file ./.nancy-ignore
